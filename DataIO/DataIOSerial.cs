@@ -134,6 +134,11 @@ namespace DataIO
                         }
                     }
                     port.Write(bytes, 0, bytes.Length);
+
+                    if(Logger != null)
+                    {
+                        Logger.AddData(bytes);
+                    }
                 }
             }
         }
