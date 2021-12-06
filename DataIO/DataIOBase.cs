@@ -8,6 +8,7 @@ namespace DataIO
     {
         public DataLink DataIn { get; set; }
         public DataLink DataOut { get; set; }
+        public DataIOLogger Logger { get; set; }
 
         public delegate void DataIOEventHandler(object sender, DataIOEventArgs e);
 
@@ -17,7 +18,7 @@ namespace DataIO
             DataOut = new DataLink();
         }
 
-        public void AddLink(object it, DataLinkDirection direction)
+        public void AddLink(dynamic it, DataLinkDirection direction)
         {
             switch (direction)
             {
