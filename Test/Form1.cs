@@ -6,6 +6,7 @@ namespace Test
 {
     public partial class Form1 : Form
     {
+        static DataIOLogger logger = new DataIOLogger();
         static DataIOSerial dataIO = new DataIOSerial();
         static IpAddress ip = new IpAddress();
         static MacAddress mac = new MacAddress();
@@ -16,6 +17,7 @@ namespace Test
         {
             InitializeComponent();
             dataIO.DataChanged += DataIO_DataChanged;
+            dataIO.Logger = logger;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -24,6 +26,7 @@ namespace Test
             dataIO.AddLink(mac, DataLinkDirection.DataIn);
             dataIO.AddLink(dataIn, DataLinkDirection.DataIn);
             dataIO.AddLink(dataOut, DataLinkDirection.DataOut);
+
             dataIO.Port = serial;
             dataIO.Start();
         }
