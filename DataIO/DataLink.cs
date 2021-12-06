@@ -18,7 +18,7 @@ namespace DataIO
             Items = new List<DataLinkItem>();
         }
 
-        public void AddLink(object item)
+        public void AddLink(dynamic item)
         {
             Items.Add(new DataLinkItem(item));
         }
