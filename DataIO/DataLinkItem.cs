@@ -1,12 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace DataIO
 {
     public class DataLinkItem
     {
-        public int Size { get; set; }
+        public int Size
+        {
+            get
+            {
+                int size = Properties.Last().Id + Properties.Last().Size;
+                int maxSize = 0;
+                foreach (var p in Properties)
+                {
+                    if (p.Size > maxSize) maxSize = p.Size;
+                }
+                while (size % maxSize != 0)
+                {
+                    size++;
+                }
+                return size;
+            }
+        }
 
         public object Ref { get; set; }
 
@@ -32,11 +49,15 @@ namespace DataIO
             }
         }
 
-        public DataLinkItem(object item)
+        public DataLinkItem(dynamic item)
         {
             Ref = item;
             GenerateDataLinkProperties();
-            Size = Properties.Last().Id + Properties.Last().Size;
+        }
+
+        private int DumpApproximateObjectSize(object toWeight)
+        {
+            return Marshal.ReadInt32(toWeight.GetType().TypeHandle.Value, 4);
         }
 
         private void GenerateDataLinkProperties()
@@ -93,7 +114,7 @@ namespace DataIO
             }
         }
 
-        private unsafe int GetSize<T>(T obj) where T : unmanaged
+        static public unsafe int GetSize<T>(T obj) where T : unmanaged
         {
             return sizeof(T);
         }
