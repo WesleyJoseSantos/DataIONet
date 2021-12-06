@@ -55,11 +55,6 @@ namespace DataIO
             GenerateDataLinkProperties();
         }
 
-        private int DumpApproximateObjectSize(object toWeight)
-        {
-            return Marshal.ReadInt32(toWeight.GetType().TypeHandle.Value, 4);
-        }
-
         private void GenerateDataLinkProperties()
         {
             int currId = 0;
@@ -114,7 +109,7 @@ namespace DataIO
             }
         }
 
-        static public unsafe int GetSize<T>(T obj) where T : unmanaged
+        private unsafe int GetSize<T>(T obj) where T : unmanaged
         {
             return sizeof(T);
         }
