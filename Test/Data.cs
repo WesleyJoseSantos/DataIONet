@@ -41,13 +41,13 @@ namespace Test
 
     class DataIn
     {
-        public double Double { get; set; }
         public uint Timer { get; set; }
+        public bool LedStatus { get; set; }
+        public bool Bool { get; set; }
         public int Int { get; set; }
         public int BlinkCount { get; set; }
         public float Float { get; set; }
-        public bool LedStatus { get; set; }
-        public bool Bool { get; set; }
+        public double Double { get; set; }
     }
 
     class DataOut
