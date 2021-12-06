@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace DataIO
 {
@@ -10,7 +8,7 @@ namespace DataIO
 
         public int MaxSize { get; set; } = 102300;
 
-        private DatFile file = new DatFile();
+        private DataIOFile file = new DataIOFile();
 
         private int fileCount = 0;
 
@@ -47,43 +45,7 @@ namespace DataIO
             file.FileName = Directory + "\\DAT" + fileCount + ".bin";
             fileCount++;
             file.Save();
-            file = new DatFile();
-        }
-    }
-
-    public class DatFile
-    {
-        public string FileName { get; set; }
-
-        public List<byte> Data { get; set; }
-
-        public int Size { get; set; }
-
-        public DatFile()
-        {
-            Size = 0;
-            Data = new List<byte>();
-        }
-
-        public int AddData(byte[] data)
-        {
-            Data.AddRange(data);
-            return Data.Count;
-        }
-
-        public void Save()
-        {
-            File.WriteAllBytes(FileName, Data.ToArray());
-        }
-
-        public void Load()
-        {
-            byte[] data = File.ReadAllBytes(FileName);
-            Size = data.Length;
-            for (int i = 1; i < data.Length; i++)
-            {
-                Data.Add(data[i]);
-            }
+            file = new DataIOFile();
         }
     }
 }
