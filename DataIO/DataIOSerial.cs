@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Ports;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -9,7 +10,8 @@ namespace DataIO
     {
         idle,
         waitingData,
-        readingData
+        readingData,
+        loggingData
     }
 
     public class DataIOSerial : DataIOBase
@@ -17,6 +19,7 @@ namespace DataIO
         private SerialPort port;
         private DataIOSerialState state = DataIOSerialState.idle;
         private int itId, size;
+        private byte[] buffer;
 
         public event DataIOEventHandler DataChanged;
 
@@ -46,7 +49,10 @@ namespace DataIO
 
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            DataInTask();
+            while (port.BytesToRead > 0)
+            {
+                DataInTask();
+            }
         }
 
         private void DataInTask()
@@ -55,6 +61,12 @@ namespace DataIO
             {
                 case DataIOSerialState.idle:
                     itId = port.ReadByte();
+                    if(itId >= DataIn.Items.Count)
+                    {
+                        port.DiscardInBuffer();
+                        Console.WriteLine("DataIO itId error");
+                        return;
+                    }
                     size = DataIn.Items[itId].Size;
                     state = DataIOSerialState.waitingData;
                     break;
@@ -68,7 +80,7 @@ namespace DataIO
                     {
                         var obj = DataIn.Items[itId].Ref;
                         var type = obj.GetType();
-                        byte[] buffer = new byte[size];
+                        buffer = new byte[size];
 
                         port.Read(buffer, 0, size);
 
@@ -87,8 +99,16 @@ namespace DataIO
                             }
                             pId++;
                         }
-                        state = DataIOSerialState.idle;
+                        if (Logger == null) state = DataIOSerialState.idle;
+                        else state = DataIOSerialState.loggingData;
                     }
+                    break;
+                case DataIOSerialState.loggingData:
+                    var dataToLog = new List<byte>();
+                    dataToLog.Add(Convert.ToByte(itId));
+                    dataToLog.AddRange(buffer);
+                    Logger.AddData(dataToLog.ToArray());
+                    state = DataIOSerialState.idle;
                     break;
                 default:
                     break;
