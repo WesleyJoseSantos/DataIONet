@@ -3,12 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace DataIO
 {
-    public enum DataLinkDirection
-    {
-        DataIn,
-        DataOut
-    }
-
     public class DataLink
     {
         public List<DataLinkItem> Items { get; set; }

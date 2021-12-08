@@ -61,13 +61,13 @@ namespace DataIO
             {
                 case DataIOSerialState.idle:
                     itId = port.ReadByte();
-                    if(itId >= DataIn.Items.Count)
+                    if(itId >= DataLink.Items.Count)
                     {
                         port.DiscardInBuffer();
                         Console.WriteLine("DataIO itId error");
                         return;
                     }
-                    size = DataIn.Items[itId].Size;
+                    size = DataLink.Items[itId].Size;
                     state = DataIOSerialState.waitingData;
                     break;
                 case DataIOSerialState.waitingData:
@@ -78,7 +78,7 @@ namespace DataIO
                     break;
                 case DataIOSerialState.readingData:
                     {
-                        var obj = DataIn.Items[itId].Ref;
+                        var obj = DataLink.Items[itId].Ref;
                         var type = obj.GetType();
                         buffer = new byte[size];
 
@@ -87,13 +87,13 @@ namespace DataIO
                         int pId = 0;
                         foreach (var p in type.GetProperties())
                         {
-                            var pByteId = DataIn.Items[itId].Properties[pId].Id;
-                            var pType = DataIn.Items[itId].Properties[pId].Type;
-                            var pValue = DataIn.Items[itId].Properties[pId].Value;
+                            var pByteId = DataLink.Items[itId].Properties[pId].Id;
+                            var pType = DataLink.Items[itId].Properties[pId].Type;
+                            var pValue = DataLink.Items[itId].Properties[pId].Value;
                             dynamic value = DataLinkItem.GetValue(pType.Name, buffer, pByteId);
                             if (pValue != value)
                             {
-                                DataIn.Items[itId].Properties[pId].Value = value;
+                                DataLink.Items[itId].Properties[pId].Value = value;
                                 p.SetValue(obj, value, null);
                                 DataChanged?.Invoke(this, new DataIOEventArgs(obj, p, value));
                             }
@@ -117,12 +117,12 @@ namespace DataIO
 
         public void DataOutTask()
         {
-            foreach (var item in DataOut.Items)
+            foreach (var item in DataLink.Items)
             {
                 if (item.DataChanged)
                 {
                     byte[] bytes = new byte[item.Size + 1];
-                    int id = DataOut.Items.IndexOf(item);
+                    int id = DataLink.Items.IndexOf(item);
                     bytes[0] = Convert.ToByte(id);
                     foreach (var p in item.Properties)
                     {
