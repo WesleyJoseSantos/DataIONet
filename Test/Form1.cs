@@ -6,7 +6,6 @@ namespace Test
 {
     public partial class Form1 : Form
     {
-        static DataIOLogger logger = new DataIOLogger();
         static DataIOSerial dataIO = new DataIOSerial();
         static IpAddress ip = new IpAddress();
         static MacAddress mac = new MacAddress();
@@ -17,15 +16,14 @@ namespace Test
         {
             InitializeComponent();
             dataIO.DataChanged += DataIO_DataChanged;
-            dataIO.Logger = logger;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            dataIO.AddLink(ip, DataLinkDirection.DataIn);
-            dataIO.AddLink(mac, DataLinkDirection.DataIn);
-            dataIO.AddLink(dataIn, DataLinkDirection.DataIn);
-            dataIO.AddLink(dataOut, DataLinkDirection.DataOut);
+            dataIO.AddLink(ip);
+            dataIO.AddLink(mac);
+            dataIO.AddLink(dataIn);
+            dataIO.AddLink(dataOut);
 
             dataIO.Port = serial;
             dataIO.Start();
@@ -70,6 +68,19 @@ namespace Test
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             dataIO.Stop();
+        }
+
+        private void btOpen_Click(object sender, EventArgs e)
+        {
+            var diag = new OpenFileDialog()
+            {
+                Filter = "DataIO Logger File | *.bin",
+                Multiselect = true
+            };
+            if(diag.ShowDialog() == DialogResult.OK)
+            {
+
+            }
         }
     }
 }

@@ -11,5 +11,7 @@ namespace DataIO
         public Type Type { get; set; }
 
         public dynamic Value { get; set; }
+
+        public string Name { get; set; }
     }
 }

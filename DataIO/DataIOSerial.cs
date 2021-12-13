@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Ports;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -11,7 +10,6 @@ namespace DataIO
         idle,
         waitingData,
         readingData,
-        loggingData
     }
 
     public class DataIOSerial : DataIOBase
@@ -99,16 +97,8 @@ namespace DataIO
                             }
                             pId++;
                         }
-                        if (Logger == null) state = DataIOSerialState.idle;
-                        else state = DataIOSerialState.loggingData;
+                        state = DataIOSerialState.idle;
                     }
-                    break;
-                case DataIOSerialState.loggingData:
-                    var dataToLog = new List<byte>();
-                    dataToLog.Add(Convert.ToByte(itId));
-                    dataToLog.AddRange(buffer);
-                    Logger.AddData(dataToLog.ToArray());
-                    state = DataIOSerialState.idle;
                     break;
                 default:
                     break;
@@ -134,11 +124,6 @@ namespace DataIO
                         }
                     }
                     port.Write(bytes, 0, bytes.Length);
-
-                    if(Logger != null)
-                    {
-                        Logger.AddData(bytes);
-                    }
                 }
             }
         }

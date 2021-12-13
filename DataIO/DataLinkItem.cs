@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace DataIO
 {
@@ -24,6 +23,8 @@ namespace DataIO
                 return size;
             }
         }
+
+        public string Name { get; set; }
 
         public object Ref { get; set; }
 
@@ -63,6 +64,7 @@ namespace DataIO
             Properties = new List<DataLinkItemProperty>();
 
             var type = Ref.GetType();
+            Name = type.Name;
 
             foreach (var p in type.GetProperties())
             {
@@ -72,6 +74,7 @@ namespace DataIO
 
                 newProperty.Type = value.GetType();
                 newProperty.Value = value;
+                newProperty.Name = p.Name;
 
                 if ((currId + size) > pad && currId % 4 != 0)
                 {
@@ -108,40 +111,40 @@ namespace DataIO
                 Properties.Add(newProperty);
             }
         }
-
+    
         private unsafe int GetSize<T>(T obj) where T : unmanaged
         {
             return sizeof(T);
         }
 
-        static public object GetValue(string typeName, byte[] buffer, int byteId)
+        static public object GetValue(string typeName, byte[] data, int byteId)
         {
             switch (typeName)
             {
                 case "Byte":
-                    return buffer[byteId];
+                    return data[byteId];
                 case "UInt64":
-                    return BitConverter.ToUInt64(buffer, byteId);
+                    return BitConverter.ToUInt64(data, byteId);
                 case "Boolean":
-                    return BitConverter.ToBoolean(buffer, byteId);
+                    return BitConverter.ToBoolean(data, byteId);
                 case "Char":
-                    return BitConverter.ToChar(buffer, byteId);
+                    return BitConverter.ToChar(data, byteId);
                 case "Double":
-                    return BitConverter.ToDouble(buffer, byteId);
+                    return BitConverter.ToDouble(data, byteId);
                 case "Int16":
-                    return BitConverter.ToInt16(buffer, byteId);
+                    return BitConverter.ToInt16(data, byteId);
                 case "Int32":
-                    return BitConverter.ToInt32(buffer, byteId);
+                    return BitConverter.ToInt32(data, byteId);
                 case "Int64":
-                    return BitConverter.ToInt64(buffer, byteId);
+                    return BitConverter.ToInt64(data, byteId);
                 case "Single":
-                    return BitConverter.ToSingle(buffer, byteId);
+                    return BitConverter.ToSingle(data, byteId);
                 case "UInt16":
-                    return BitConverter.ToUInt16(buffer, byteId);
+                    return BitConverter.ToUInt16(data, byteId);
                 case "UInt32":
-                    return BitConverter.ToUInt32(buffer, byteId);
+                    return BitConverter.ToUInt32(data, byteId);
                 case "String":
-                    return BitConverter.ToString(buffer, byteId);
+                    return BitConverter.ToString(data, byteId);
                 default:
                     return null;
             }

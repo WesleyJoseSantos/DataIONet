@@ -7,7 +7,6 @@ namespace DataIO
     public abstract class DataIOBase
     {
         public DataLink DataLink { get; set; }
-        public DataIOLogger Logger { get; set; }
 
         public delegate void DataIOEventHandler(object sender, DataIOEventArgs e);
 
